@@ -1,5 +1,3 @@
-# schemas.py
-
 from pydantic import BaseModel
 from typing import List
 
@@ -9,16 +7,16 @@ class CommandCreate(BaseModel):
     name: str
 
 class CommandResponse(CommandCreate):
-    comand_id: int
+    pass
 
 class ResultCreate(BaseModel):
-    command_id: int
+    comand_id: int
     place: str
     score: int
     next_level: str
 
 class ResultResponse(ResultCreate):
-    play_id: int
+    pass
 
 class GameCreate(BaseModel):
     name: str
@@ -27,5 +25,4 @@ class GameCreate(BaseModel):
     league: str
 
 class GameResponse(GameCreate):
-    play_id: int
-
+    pass
