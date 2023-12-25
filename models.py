@@ -7,7 +7,7 @@ Base = declarative_base()
 class Command(Base):
     __tablename__ = 'commands'
 
-    comand_id = Column(Integer, primary_key=True)
+    command_id = Column(Integer, primary_key=True)
     university = Column(String, nullable=False)
     city = Column(String, nullable=False)
     name = Column(String, nullable=False)
@@ -18,7 +18,7 @@ class Result(Base):
     __tablename__ = 'results'
 
     play_id = Column(Integer, primary_key=True)
-    command_id = Column(Integer, ForeignKey('commands.comand_id'), nullable=False)
+    command_id = Column(Integer, ForeignKey('commands.command_id'), nullable=False)
     place = Column(String)
     score = Column(Integer)
     next_level = Column(String)
@@ -37,11 +37,7 @@ class Game(Base):
 
     results = relationship('Result', back_populates='game')
 
-def initialize_database():
-    DATABASE_URL = 'postgresql://alisa:2003@localhost:5432/project_database'
-    engine = create_engine(DATABASE_URL)
+DATABASE_URL = 'postgresql://alisa:2003@localhost:5432/project_database'
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
 
-    Base.metadata.create_all(engine)
-
-if __name__ == "__main__":
-    initialize_database()
