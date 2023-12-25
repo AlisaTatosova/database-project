@@ -39,14 +39,14 @@ def list_commands(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
 
 @app.get("/commands/{command_id}", response_model=CommandResponse)
 def read_command(command_id: int, db: Session = Depends(get_db)):
-    command = db.query(Command).filter(Command.comand_id == command_id).first()
+    command = db.query(Command).filter(Command.comand_id == comand_id).first()
     if command is None:
         raise HTTPException(status_code=404, detail="Command not found")
     return command
 
 @app.delete("/commands/{command_id}", response_model=CommandResponse)
 def delete_command(command_id: int, db: Session = Depends(get_db)):
-    command = db.query(Command).filter(Command.comand_id == command_id).first()
+    command = db.query(Command).filter(Command.command_id == command_id).first()
     if command is None:
         raise HTTPException(status_code=404, detail="Command not found")
     db.delete(command)
@@ -99,14 +99,14 @@ def list_games(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 @app.get("/games/{game_id}", response_model=GameResponse)
 def read_game(game_id: int, db: Session = Depends(get_db)):
-    game = db.query(Game).filter(Game.play_id == game_id).first()
+    game = db.query(Game).filter(Game.game_id == game_id).first()
     if game is None:
         raise HTTPException(status_code=404, detail="Game not found")
     return game
 
 @app.delete("/games/{game_id}", response_model=GameResponse)
 def delete_game(game_id: int, db: Session = Depends(get_db)):
-    game = db.query(Game).filter(Game.play_id == game_id).first()
+    game = db.query(Game).filter(Game.game_id == game_id).first()
     if game is None:
         raise HTTPException(status_code=404, detail="Game not found")
     db.delete(game)
