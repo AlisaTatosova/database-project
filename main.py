@@ -113,3 +113,45 @@ def delete_game(game_id: int, db: Session = Depends(get_db)):
     db.commit()
     return game
 
+# 1. SELECT ... WHERE (with multiple conditions)
+@app.get("/commands/filter/", response_model=List[CommandResponse])
+def filter_commands(university: str, city: str, name: str, db: Session = Depends(get_db)):
+    commands = db.query(Command).filter(
+        Command.university == university,
+        Command.city == city,
+        Command.name == name
+    ).all()
+    return commands
+
+# 2. JOIN
+@app.get("/results/join/", response_model=List[ResultResponse])
+def get_results_with_games(db: Session = Depends(get_db)):
+    results = db.query(Result).join(Game).all()
+    return results
+
+# 3. UPDATE with a non-trivial condition
+@app.put("/update-command/", response_model=CommandResponse)
+def update_command(university: str, new_name: str, db: Session = Depends(get_db)):
+    command = db.query(Command).filter(Command.university == university).first()
+    if not command:
+        raise HTTPException(status_code=404, detail="Command not found")
+    command.name = new_name
+    db.commit()
+    db.refresh(command)
+    return command
+
+# 4. GROUP BY
+@app.get("/games/group-by/", response_model=List[dict])
+def count_results_by_game(db: Session = Depends(get_db)):
+    result = db.query(Result.game_id, func.count(Result.play_id)).group_by(Result.game_id).all()
+    return [{"game_id": game_id, "result_count": count} for game_id, count in result]
+
+# 5. Add sorting of results based on a field
+@app.get("/commands/sorted/", response_model=List[CommandResponse])
+def list_sorted_commands(sort_by: str, db: Session = Depends(get_db)):
+    if not hasattr(Command, sort_by):
+        raise HTTPException(status_code=400, detail="Invalid sort field")
+    commands = db.query(Command).order_by(getattr(Command, sort_by)).all()
+    return commands
+
+
